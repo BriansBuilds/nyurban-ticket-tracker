@@ -12,7 +12,89 @@ A monitoring tool that checks the NY Urban website every 3 minutes for slot avai
 
 ## Setup Options
 
-### Option 1: GitHub Actions (Recommended - No PC Required!)
+### Option 1: Fly.io (🏆 BEST FREE OPTION - 100% Free!)
+
+Fly.io offers a **completely free tier** with no credit card required. Perfect for this use case!
+
+See [fly.io/README.md](fly.io/README.md) for detailed setup instructions.
+
+**Pros:**
+- ✅ **100% free** - No credit card needed
+- ✅ **Runs Python directly** - No code changes
+- ✅ **Very reliable** - No delays
+- ✅ **Persistent storage** - State files persist
+- ✅ **No spin-down** - Always running
+
+**Setup time**: ~10 minutes
+
+### Option 2: Render (⭐ EASIEST FREE OPTION - Recommended!)
+
+Render has built-in cron job support and a free tier. **This is the easiest option to get started!**
+
+See [render/README.md](render/README.md) for detailed setup instructions.
+
+**Pros:**
+- ✅ **Free tier** - No credit card required
+- ✅ **Built-in cron** - Native cron job support
+- ✅ **Runs Python directly** - No code changes needed
+- ✅ **Easiest setup** - ~5 minutes total
+- ✅ **Automatic deployments** - Updates on git push
+
+**Setup time**: ~5 minutes
+
+**Quick Start:**
+1. Go to [render.com](https://render.com) and sign up
+2. Click "New +" → "Cron Job"
+3. Connect your GitHub repo
+4. Set schedule: `*/3 * * * *`
+5. Set command: `python check_availability.py`
+6. Add environment variables
+7. Deploy! 🎉
+
+### Option 3: Railway (⭐ Easiest Paid Option - $5/month)
+
+Railway is the easiest option but uses a $5/month credit (may charge if exceeded).
+
+See [railway/README.md](railway/README.md) for detailed setup instructions.
+
+**Pros:**
+- ✅ **Runs Python directly** - No code conversion needed
+- ✅ **Very reliable** - Much better than GitHub Actions
+- ✅ **Easiest setup** - Just connect GitHub and deploy
+- ✅ **$5 credit/month** - Usually free, may charge if exceeded
+
+**Setup time**: ~5 minutes
+
+### Option 4: GitHub Actions (Free but Unreliable)
+
+Railway is the **best option** for running your Python script reliably. It requires no code changes and is very simple to set up.
+
+See [railway/README.md](railway/README.md) for detailed setup instructions.
+
+**Pros:**
+- ✅ **Runs Python directly** - No code conversion needed
+- ✅ **Very reliable** - Much better than GitHub Actions
+- ✅ **Easiest setup** - Just connect GitHub and deploy
+- ✅ **Free tier** - $5 credit/month (plenty for this)
+- ✅ **Automatic deployments** - Updates on git push
+
+**Setup time**: ~5 minutes
+
+### Option 2: Render (Good Alternative)
+
+Render has built-in cron job support and can run Python directly.
+
+See [render/README.md](render/README.md) for setup instructions.
+
+**Pros:**
+- ✅ Built-in cron jobs
+- ✅ Runs Python directly
+- ✅ Free tier available
+
+**Cons:**
+- ⚠️ Free tier may have some delays
+
+### Option 3: GitHub Actions (Free but Unreliable)
 
 This is the easiest way to run the tracker 24/7 without keeping your computer on.
 
@@ -41,11 +123,16 @@ Add these secrets:
 #### 3. Enable GitHub Actions
 
 The workflow is already set up in `.github/workflows/check-availability.yml`. It will:
-- Run every 3 minutes automatically
+- Run every 3 minutes automatically (via GitHub's schedule trigger)
 - Check for availability changes across all 5 locations
 - Send email notifications when slots become available
 - Persist state between runs
 - **You can change the check interval anytime by updating the `CHECK_INTERVAL_MINUTES` secret - no code changes needed!**
+
+**⚠️ Important Note about Scheduled Workflows:**
+GitHub Actions scheduled workflows (`schedule` trigger) are **not guaranteed** to run on time. Delays of 3-10 minutes (or even hours) are common, and runs may be skipped entirely. This is a known limitation of GitHub Actions.
+
+**For more reliable scheduling**, consider using an external cron service to trigger the workflow via API. See [EXTERNAL_CRON_SETUP.md](EXTERNAL_CRON_SETUP.md) for detailed instructions.
 
 **Note:** The cron schedule runs every 3 minutes. The script will only perform the actual check if enough time has passed based on your `CHECK_INTERVAL_MINUTES` secret (default: 3 minutes). If you set `CHECK_INTERVAL_MINUTES` to a value greater than 3, the script will skip runs until enough time has passed.
 
@@ -64,7 +151,16 @@ You can manually trigger a test run:
 
 If the workflow runs manually but not automatically, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed solutions.
 
-### Option 2: Local Setup (PC Required)
+### Option 3: Other Services
+
+See [ALTERNATIVES.md](ALTERNATIVES.md) for other options like:
+- Vercel Cron Jobs
+- Railway
+- Render
+- Fly.io
+- AWS Lambda
+
+### Option 4: Local Setup (PC Required)
 
 #### 1. Install Dependencies
 

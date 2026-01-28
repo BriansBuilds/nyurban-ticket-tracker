@@ -1,0 +1,9 @@
+# Railway Procfile
+# This tells Railway how to run your application
+
+# Option 1: Run as a continuous cron job
+worker: bash railway/run_cron.sh
+
+# Option 2: If you want to run it as a one-off cron job instead
+# Uncomment the line below and Railway will run it on schedule
+# cron: python check_availability.py

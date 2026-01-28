@@ -1,0 +1,37 @@
+# Fly.io configuration for NY Urban Ticket Tracker
+# Generated with: fly launch
+
+app = "nyurban-tracker"
+primary_region = "iad"  # Change to your preferred region (iad = Washington DC, ord = Chicago, etc.)
+
+[build]
+
+[env]
+  # These can be overridden with: fly secrets set KEY=value
+  CHECK_INTERVAL_MINUTES = "3"
+
+# HTTP service (optional - only if you want a webhook endpoint)
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+# Process that runs the cron job
+[processes]
+  cron = "python fly.io/run_cron.py"
+
+# Persistent storage for state file
+[mounts]
+  source = "nyurban_data"
+  destination = "/data"

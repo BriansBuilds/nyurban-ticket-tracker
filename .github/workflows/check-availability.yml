@@ -2,9 +2,11 @@ name: Check NY Urban Availability
 
 on:
   schedule:
-    # Run every 3 minutes
-    - cron: '*/3 * * * *'
-  workflow_dispatch:  # Allow manual triggering
+    # Run every 3 minutes (Note: GitHub Actions scheduled workflows are not guaranteed to run on time)
+    # Delays of 3-10 minutes are common, and runs may be skipped entirely
+    # For more reliable scheduling, use an external cron service to trigger via workflow_dispatch
+    - cron: '*/3 13-21 * * *'
+  workflow_dispatch:  # Allow manual triggering and API-triggered runs
 
 jobs:
   check:
