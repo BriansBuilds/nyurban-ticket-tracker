@@ -1,0 +1,10 @@
+# Cron job configuration for NY Urban Ticket Tracker
+# Add this line to your crontab (crontab -e on Linux/Mac)
+# 
+# For Windows, use Task Scheduler instead (see README.md)
+#
+# Run every 3 minutes (to avoid throttling the server):
+# */3 * * * * cd /path/to/nyurban-ticket-tracker && /usr/bin/python3 check_availability.py >> availability.log 2>&1
+#
+# Or with virtual environment:
+# */3 * * * * cd /path/to/nyurban-ticket-tracker && /path/to/venv/bin/python check_availability.py >> availability.log 2>&1

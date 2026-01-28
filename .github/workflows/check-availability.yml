@@ -1,0 +1,61 @@
+name: Check NY Urban Availability
+
+on:
+  schedule:
+    # Run every minute - actual check interval is controlled by CHECK_INTERVAL_MINUTES secret
+    - cron: '* * * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Load previous state
+        uses: actions/cache@v4
+        with:
+          path: availability_state.json
+          key: availability-state
+          restore-keys: |
+            availability-state-
+      
+      - name: Check availability
+        env:
+          CHECK_INTERVAL_MINUTES: ${{ secrets.CHECK_INTERVAL_MINUTES }}
+          EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
+          EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+          EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+        run: |
+          python check_availability.py
+      
+      - name: Save state for next run
+        uses: actions/cache@v4
+        with:
+          path: availability_state.json
+          key: availability-state
+      
+      - name: Upload state as artifact (for debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: availability-state
+          path: availability_state.json
+          retention-days: 1
+          if-no-files-found: ignore
