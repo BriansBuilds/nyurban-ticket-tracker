@@ -41,11 +41,13 @@ Add these secrets:
 #### 3. Enable GitHub Actions
 
 The workflow is already set up in `.github/workflows/check-availability.yml`. It will:
-- Run every minute, but only actually check based on `CHECK_INTERVAL_MINUTES` secret (default: 3 minutes)
+- Run every 3 minutes automatically
 - Check for availability changes across all 5 locations
 - Send email notifications when slots become available
 - Persist state between runs
 - **You can change the check interval anytime by updating the `CHECK_INTERVAL_MINUTES` secret - no code changes needed!**
+
+**Note:** The cron schedule runs every 3 minutes. The script will only perform the actual check if enough time has passed based on your `CHECK_INTERVAL_MINUTES` secret (default: 3 minutes). If you set `CHECK_INTERVAL_MINUTES` to a value greater than 3, the script will skip runs until enough time has passed.
 
 The workflow will start running automatically once you push to the repository!
 
@@ -55,6 +57,12 @@ You can manually trigger a test run:
 - Go to Actions tab in your repository
 - Select "Check NY Urban Availability"
 - Click "Run workflow"
+
+**Important**: Make sure the workflow file is in your **default branch** (usually `main` or `master`) for scheduled runs to work!
+
+#### 5. Troubleshooting Scheduled Runs
+
+If the workflow runs manually but not automatically, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed solutions.
 
 ### Option 2: Local Setup (PC Required)
 
@@ -199,6 +207,37 @@ Simply update the `CHECK_INTERVAL_MINUTES` secret in your repository settings:
 - **Every 10 minutes**: Change cron to `*/10 * * * *`
 
 ## Troubleshooting
+
+### GitHub Actions Scheduled Workflows Not Running
+
+If your workflow runs manually but not automatically, try these steps:
+
+1. **Check if Actions are enabled**:
+   - Go to Settings → Actions → General
+   - Ensure "Allow all actions and reusable workflows" is selected
+   - Ensure "Workflow permissions" allows read and write permissions
+
+2. **Verify the workflow file is in the default branch**:
+   - The workflow must be in your default branch (usually `main` or `master`)
+   - Make sure you've committed and pushed the `.github/workflows/check-availability.yml` file
+
+3. **Check workflow run history**:
+   - Go to Actions tab → Check NY Urban Availability
+   - Look for scheduled runs (they may show as "Scheduled" or have a clock icon)
+   - Scheduled runs can be delayed up to 15 minutes
+
+4. **Repository activity requirement**:
+   - GitHub may skip scheduled workflows if the repository has been inactive
+   - Try making a small commit or manually triggering the workflow to "wake it up"
+
+5. **Cron schedule limitations**:
+   - GitHub Actions may throttle very frequent schedules (like every minute)
+   - Consider using a longer cron interval (e.g., `*/5 * * * *` for every 5 minutes) since the script respects `CHECK_INTERVAL_MINUTES` anyway
+
+6. **Check GitHub Actions status page**:
+   - Visit [GitHub Status](https://www.githubstatus.com/) to see if there are any service issues
+
+### Local Setup Issues
 
 - **Script not running**: Check that Python path in cron is correct
 - **No output**: Check `availability.log` for errors

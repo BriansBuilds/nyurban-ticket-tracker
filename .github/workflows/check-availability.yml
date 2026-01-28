@@ -2,8 +2,8 @@ name: Check NY Urban Availability
 
 on:
   schedule:
-    # Run every minute - actual check interval is controlled by CHECK_INTERVAL_MINUTES secret
-    - cron: '* * * * *'
+    # Run every 3 minutes
+    - cron: '*/3 * * * *'
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
